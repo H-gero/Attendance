@@ -2,8 +2,19 @@
 import { onMounted } from 'vue'
 import { useP1Store } from '../../stores/p1'
 import P1ListItem from './P1ListItem.vue'
+import { ref, watch } from 'vue'
 
 const store = useP1Store()
+const currentPage = ref(store.currentPage)
+
+watch(currentPage, (val) => {
+  onPageChange(val)
+})
+
+function onPageChange(page) {
+  console.log(page);
+  store.fetchActividades({ limit: 5, offset: (page - 1) * 5 })
+}
 
 onMounted(() => {
   store.fetchActividades()
@@ -19,17 +30,12 @@ onMounted(() => {
     </div>
 
     <TransitionGroup v-else tag="ul" name="list" class="space-y-4">
-      <P1ListItem
-        v-for="actividad in store.actividades"
-        :key="`actividad-item-${actividad.id}`"
-        :id="actividad.id"
-        :id_asignatura="actividad.id_asignatura"
-        :id_tipo_de_clase="actividad.id_tipo_de_clase"
-        :semana="actividad.semana"
-        :id_profesor="actividad.id_profesor"
-        class="animate__animated animate__fadeIn"
-      />
+      <P1ListItem v-for="actividad in store.actividades" :key="`actividad-item-${actividad.id}`" :id="actividad.id"
+        :id_asignatura="actividad.id_asignatura" :id_tipo_de_clase="actividad.id_tipo_de_clase"
+        :semana="actividad.semana" :id_profesor="actividad.id_profesor" class="animate__animated animate__fadeIn" />
     </TransitionGroup>
+    <q-pagination v-model="currentPage" :max="store.pages" :max-pages="7" boundary-numbers
+      @update:model-value="onPageChange" class="q-mt-md" />
   </div>
 </template>
 

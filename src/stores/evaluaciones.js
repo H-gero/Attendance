@@ -5,15 +5,26 @@ export const useEvaluacionStore = defineStore('evaluacion', {
   state: () => ({
     evaluaciones: [],
     evaluacionEnEdicion: null,
+    total: 0,
+    pages: 0,
+    currentPage: 1,
   }),
 
   actions: {
-    async fetchEvaluaciones() {
+    async fetchEvaluaciones({ limit = 5, offset = 0 } = {}) {
       try {
+        const params = new URLSearchParams()
+        if (limit) params.append('limit', limit)
+        if (offset) params.append('offset', offset)
         const response = await axios.get(
-          'https://attendance-backend-9nhc.onrender.com/api/evaluacion/all'
+          `https://attendance-backend-9nhc.onrender.com/api/evaluacion/all?${params.toString()}`,
         )
-        this.evaluaciones = response.data.data
+        console.log('Respuesta del servidor:', response.data.data);
+
+        this.evaluaciones = response.data.data || []
+        this.total = response.data.total || 0
+        this.pages = response.data.pages || 0
+        this.currentPage = response.data.currentPage || 1
       } catch (error) {
         console.error('Error al cargar evaluaciones:', error)
         throw error

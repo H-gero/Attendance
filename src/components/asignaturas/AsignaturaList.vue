@@ -2,11 +2,22 @@
 import { onMounted } from 'vue'
 import { useAsignaturaStore } from 'src/stores/asignatura'
 import { useQuasar } from 'quasar'
+import { ref, watch } from 'vue'
 
 import AsignaturaListItem from './AsignaturaListItem.vue'
 
 const store = useAsignaturaStore()
 const $q = useQuasar()
+const currentPage = ref(store.currentPage)
+
+watch(currentPage, (val) => {
+  onPageChange(val)
+})
+
+function onPageChange(page) {
+  console.log(page);
+  store.fetchAsignaturas({ limit: 5, offset: (page - 1) * 5 })
+}
 
 onMounted(async () => {
   try {
@@ -29,16 +40,12 @@ onMounted(async () => {
       No hay asignaturas registradas.
     </div>
     <TransitionGroup v-else tag="ul" name="list" class="space-y-4">
-      <AsignaturaListItem
-        v-for="asignatura in store.asignaturas"
-        :key="`asignatura-item${asignatura.id}`"
-        :id="asignatura.id"
-        :nombre="asignatura.name"
-        :descripcion="asignatura.description"
-        :active="asignatura.active"
-        class="animate__animated animate__fadeIn"
-      />
+      <AsignaturaListItem v-for="asignatura in store.asignaturas" :key="`asignatura-item${asignatura.id}`"
+        :id="asignatura.id" :nombre="asignatura.name" :descripcion="asignatura.description" :active="asignatura.active"
+        class="animate__animated animate__fadeIn" />
     </TransitionGroup>
+    <q-pagination v-model="currentPage" :max="store.pages" :max-pages="7" boundary-numbers
+      @update:model-value="onPageChange" class="q-mt-md" />
   </div>
 </template>
 
@@ -58,6 +65,7 @@ ul {
 .list-leave-active {
   transition: all 0.5s ease;
 }
+
 .list-enter-from,
 .list-leave-to {
   opacity: 0;

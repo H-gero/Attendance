@@ -7,13 +7,24 @@ export const usePaseAsistenciaStore = defineStore('pasesdeasistencia', {
     asistencias: [],
     asistenciaEnEdicion: null,
     currentQr: null,
+    total: 0,
+    pages: 0,
+    currentPage: 1,
   }),
   actions: {
-    async fetchPaseAsistencias() {
+    async fetchPaseAsistencias({ limit = 5, offset = 0 } = {}) {
+      console.log('Obteniendo asistencias...pases de asistencia')
+      const params = new URLSearchParams()
+      if (limit) params.append('limit', limit)
+      if (offset) params.append('offset', offset)
       const response = await axios.get(
-        'https://attendance-backend-9nhc.onrender.com/api/pase_de_asistencia/all',
+        `https://attendance-backend-9nhc.onrender.com/api/pase_de_asistencia/all?${params.toString()}`,
       )
+      console.log('Respuesta del servidor:', response.data);
       this.asistencias = response.data
+      this.total = response.data.total || 0
+      this.pages = response.data.pages || 0
+      this.currentPage = response.data.currentPage || 1
     },
 
     async generarPase(idP1) {
@@ -121,12 +132,12 @@ export const usePaseAsistenciaStore = defineStore('pasesdeasistencia', {
 //       const qrCode = `data:image/png;base64,${btoa(sesionId)}` // Simulación (reemplazado por qrcode.vue)
 //       const expiresAt = Date.now() + 15 * 60 * 1000
 
-      // await axios.post('https://attendance-backend-9nhc.onrender.com/api/pases', {
-      //   id_P1: idP1, // Usar el parámetro idP1
-      //   sesionId,
-      //   qrCode,
-      //   expiresAt,
-      // })
+// await axios.post('https://attendance-backend-9nhc.onrender.com/api/pases', {
+//   id_P1: idP1, // Usar el parámetro idP1
+//   sesionId,
+//   qrCode,
+//   expiresAt,
+// })
 
 //       this.currentQr = { id_P1: idP1, sesionId, qrCode, expiresAt } // Corregido: id_P1 como propiedad
 //       return this.currentQr

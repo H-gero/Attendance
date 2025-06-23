@@ -8,7 +8,7 @@
         <p>Esta acción no se puede deshacer.</p>
       </q-card-section>
       <q-card-actions aling="right">
-        
+
         <q-btn flat label="Cancelar" color="primary" v-close-popup />
         <q-btn flat label="Eliminar" color="negative" @click="handleDelete" v-close-popup />
       </q-card-actions>

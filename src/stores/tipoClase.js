@@ -7,18 +7,27 @@ export const useTipoClaseStore = defineStore('tipoClase', {
     tiposClase: [],
     tipoClaseEnEdicion: null,
     nextId: 3,
+    total: 0,
+    pages: 0,
+    currentPage: 1,
   }),
 
   actions: {
-    async fetchTiposClase() {
+    async fetchTiposClase({ limit = 5, offset = 0 } = {}) {
       try {
         console.log('Cargando tipos de clase desde el servidor...')
+        const params = new URLSearchParams()
+        if (limit) params.append('limit', limit)
+        if (offset) params.append('offset', offset)
         const response = await axios.get(
-          'https://attendance-backend-9nhc.onrender.com/api/tipodeclase/all',
+          `https://attendance-backend-9nhc.onrender.com/api/tipodeclase/all?${params.toString()}`,
         )
         console.warn(response.data)
         this.tiposClase = response.data.TipodeClases
-        
+        this.total = response.data.total || 0
+        this.pages = response.data.pages || 0
+        this.currentPage = response.data.currentPage || 1
+
         return this.tiposClase
       } catch (error) {
         console.error('Error al cargar tipos de clase:', error)

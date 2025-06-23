@@ -17,6 +17,8 @@ export const useAuthStore2 = defineStore('auth2', {
             body: JSON.stringify({ username, password }),
           },
         )
+        console.log('Respuesta del servidor:', response);
+
         if (!response.ok) throw new Error('Credenciales inválidas')
         const data = await response.json()
 

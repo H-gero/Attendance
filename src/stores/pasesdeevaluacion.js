@@ -6,15 +6,24 @@ export const usePaseEvaluacionStore = defineStore('paseEvaluacion', {
     evaluaciones: [],
     evaluacionEnEdicion: null,
     nextId: 1,
+    total: 0,
+    pages: 0,
+    currentPage: 1,
   }),
 
   actions: {
-    async fetchEvaluaciones() {
+    async fetchEvaluaciones({ limit = 5, offset = 0 } = {}) {
       try {
         console.error('Evaluaciones enter...')
-        const response = await axios.get('https://attendance-backend-9nhc.onrender.com/api/evaluacion/all')
+        const params = new URLSearchParams()
+        if (limit) params.append('limit', limit)
+        if (offset) params.append('offset', offset)
+        const response = await axios.get(`https://attendance-backend-9nhc.onrender.com/api/evaluacion/all?${params.toString()}`)
         console.warn(response.data)
         this.evaluaciones = response.data.evaluaciones || []
+        this.total = response.data.total || 0
+        this.pages = response.data.pages || 0
+        this.currentPage = response.data.currentPage || 1
       } catch (error) {
         console.error('Error al cargar evaluaciones:', error)
         throw error

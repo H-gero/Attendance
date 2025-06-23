@@ -22,7 +22,7 @@ onMounted(() => {
 
 const emailRules = [
   (val) => !!val || 'El usuario o correo es requerido',
-  (val) => /.+@.+\..+/.test(val) || 'El correo debe ser válido',
+  // (val) => /.+@.+\..+/.test(val) || 'El correo debe ser válido',
 ]
 const passwordRules = [(val) => !!val || 'La contraseña es requerida']
 
@@ -34,25 +34,25 @@ async function handleLogin() {
 
   isLoading.value = true
   try {
-    if (username.value === 'admin@gmail.com' && password.value === 'admin') {
-      localStorage.setItem('authData', JSON.stringify({ username: username.value }))
-      router.push('/')
-      $q.notify({
-        color: 'positive',
-        message: `Bienvenido/a, ${username.value}!`,
-        icon: 'check',
-      })
+    // if (username.value === 'admin@gmail.com' && password.value === 'admin') {
+    //   localStorage.setItem('authData', JSON.stringify({ username: username.value }))
+    //   router.push('/')
+    //   $q.notify({
+    //     color: 'positive',
+    //     message: `Bienvenido/a, ${username.value}!`,
+    //     icon: 'check',
+    //   })
 
-    } else {
-      $q.notify({ color: 'negative', message: 'Usuario o contraseña incorrectos', icon: 'warning' })
-    }
-    // await authStore.login(username.value, password.value)
-    // $q.notify({
-    //   color: 'positive',
-    //   message: `Bienvenido/a, ${username.value}!`,
-    //   icon: 'check',
-    // })
-    // redirigirSegunRol()
+    // } else {
+    //   $q.notify({ color: 'negative', message: 'Usuario o contraseña incorrectos', icon: 'warning' })
+    // }
+    await authStore.login(username.value, password.value)
+    $q.notify({
+      color: 'positive',
+      message: `Bienvenido/a, ${username.value}!`,
+      icon: 'check',
+    })
+    redirigirSegunRol()
   } catch (error) {
     $q.notify({ color: 'negative', message: error.message, icon: 'warning' })
   } finally {

@@ -11,7 +11,7 @@ export const useProfesoresStore = defineStore('profesores', {
   }),
 
   actions: {
-    async fetchProfesores({ limit = 10, offset = 0 } = {}) {
+    async fetchProfesores({ limit = 5, offset = 0 } = {}) {
       try {
         console.log('Obteniendo profesores...')
         const params = new URLSearchParams()
@@ -19,8 +19,10 @@ export const useProfesoresStore = defineStore('profesores', {
         if (offset) params.append('offset', offset)
 
         const response = await axios.get(
-          `https://attendance-backend-9nhc.onrender.com/api/profesor/all`,
+          `https://attendance-backend-9nhc.onrender.com/api/profesor/all?${params.toString()}`,
         )
+        console.log('Respuesta del servidor:', response.data);
+
         console.warn(response.data.Profesors)
 
         this.profesores = response.data.Profesors || []

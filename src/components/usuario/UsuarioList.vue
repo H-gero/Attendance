@@ -1,10 +1,19 @@
 <script setup>
+import { ref, watch } from 'vue'
 import { onMounted } from 'vue'
 import { useUsuariosStore } from 'src/stores/usuarios'
 import UsuarioListItem from './UsuarioListItem.vue'
 
 const store = useUsuariosStore()
+const currentPage = ref(store.currentPage)
 
+watch(currentPage, (val) => {
+  onPageChange(val)
+})
+
+function onPageChange(page) {
+  store.fetchUsuarios({ limit: 5, offset: (page - 1) * 5 })
+}
 onMounted(() => {
   store.fetchUsuarios()
 })
@@ -21,6 +30,8 @@ onMounted(() => {
         :username="usuario.username" :password="usuario.password" :id_usuario="usuario.id_usuario"
         class="animate__animated animate__fadeIn" />
     </TransitionGroup>
+    <q-pagination v-model="currentPage" :max="store.pages" :max-pages="7" boundary-numbers
+      @update:model-value="onPageChange" class="q-mt-md" />
   </div>
 </template>
 

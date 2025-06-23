@@ -13,6 +13,9 @@ export const useP1Store = defineStore('p1', {
   state: () => ({
     actividades: [],
     actividadEnEdicion: null,
+    total: 0,
+    pages: 0,
+    currentPage: 1,
   }),
 
   getters: {
@@ -20,11 +23,17 @@ export const useP1Store = defineStore('p1', {
   },
 
   actions: {
-    async fetchActividades() {
+    async fetchActividades({ limit = 5, offset = 0 } = {}) {
       try {
-        const response = await axios.get('https://attendance-backend-9nhc.onrender.com/api/p1/all')
+        const params = new URLSearchParams()
+        if (limit) params.append('limit', limit)
+        if (offset) params.append('offset', offset)
+        const response = await axios.get(`https://attendance-backend-9nhc.onrender.com/api/p1/all?${params.toString()}`)
         this.actividades = response.data
-        console.warn(response.data)
+        console.warn('Respuesta del servidor', response.data)
+        this.total = response.data.total || 0
+        this.pages = response.data.pages || 0
+        this.currentPage = response.data.currentPage || 1
       } catch (error) {
         console.error('Error al cargar actividades:', error)
         throw error

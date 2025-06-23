@@ -2,11 +2,22 @@
 import { onMounted } from 'vue'
 import { useEvaluacionStore } from 'src/stores/evaluaciones'
 import { useQuasar } from 'quasar'
+import { ref, watch } from 'vue'
 
 import EvaluacionesListItem from './EvaluacionesListItem.vue'
 
 const store = useEvaluacionStore()
 const $q = useQuasar()
+const currentPage = ref(store.currentPage)
+
+watch(currentPage, (val) => {
+  onPageChange(val)
+})
+
+function onPageChange(page) {
+  console.log(page);
+  store.fetchEvaluaciones({ limit: 5, offset: (page - 1) * 5 })
+}
 
 onMounted(async () => {
   try {
@@ -29,9 +40,11 @@ onMounted(async () => {
       No hay evaluaciones registradas.
     </div>
     <TransitionGroup v-else tag="ul" name="list" class="space-y-4">
-      <EvaluacionesListItem v-for="evaluacion in store.evaluaciones" :key="`evaluacion-${evaluacion.id}`"
-        :id="evaluacion.id" :nombre="evaluacion.name" :descripcion="evaluacion.description" :tipo="evaluacion.tipo"
-        :active="evaluacion.active" />
+      <EvaluacionesListItem v-for="(evaluacion, index) in store.evaluaciones"
+        :key="`evaluacion-${evaluacion.id || index}`" :id="evaluacion.id" :nombre="evaluacion.name"
+        :descripcion="evaluacion.description" :tipo="evaluacion.tipo" :active="evaluacion.active" />
+      <q-pagination v-model="currentPage" :max="store.pages" :max-pages="7" boundary-numbers
+        @update:model-value="onPageChange" class="q-mt-md" />
     </TransitionGroup>
   </div>
 </template>

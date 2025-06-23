@@ -7,16 +7,25 @@ export const useAsignaturaStore = defineStore('asignatura', {
     asignaturas: [],
     asignaturaEnEdicion: null,
     nextId: 3,
+    total: 0,
+    pages: 0,
+    currentPage: 1,
   }),
 
   actions: {
-    async fetchAsignaturas() {
+    async fetchAsignaturas({ limit = 5, offset = 0 } = {}) {
       try {
+        const params = new URLSearchParams()
+        if (limit) params.append('limit', limit)
+        if (offset) params.append('offset', offset)
         const response = await axios.get(
-          'https://attendance-backend-9nhc.onrender.com/api/asignatura/all',
+          `https://attendance-backend-9nhc.onrender.com/api/asignatura/all?${params.toString()}`,
         )
         console.warn(response.data)
         this.asignaturas = response.data.asignaturas
+        this.total = response.data.total || 0
+        this.pages = response.data.pages || 0
+        this.currentPage = response.data.currentPage || 1
       } catch (error) {
         console.error('Error al cargar asistencias:', error)
         throw error

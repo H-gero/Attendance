@@ -2,9 +2,17 @@
 import { ref, watch } from 'vue'
 import { useEstudiantesStore } from 'src/stores/estudiantes'
 import { useQuasar } from 'quasar'
+import { useUsuariosStore } from 'src/stores/usuarios'
+import { useGrupoStore } from 'src/stores/grupo'
 
 const $q = useQuasar()
 const store = useEstudiantesStore()
+const usuarioStore = useUsuariosStore()
+const grupoStore = useGrupoStore()
+
+usuarioStore.fetchUsuarios()
+grupoStore.fetchGrupos()
+
 
 const estudiante = ref({
   id: null,
@@ -89,19 +97,11 @@ function resetForm() {
         (val) => !!val || 'El apellido es requerido',
         (val) => /^[A-ZÁÉÍÓÚÑ][a-zA-ZáéíóúñÁÉÍÓÚÑüÜ\s'-]*$/.test(val) || 'Solo letras y debe empezar con mayúscula'
       ]" />
-
-      <q-input v-model="estudiante.id_usuario" label="ID de Estudiante" outlined :rules="[
-        (val) => !!val || 'El ID del estudiante es requerido',
-        (val) => /^\d+$/.test(val) || 'Solo se permiten números',
-        (val) => String(val).length === 11 || 'Debe tener exactamente 11 dígitos'
-      ]" type="number" placeholder="11 dígitos" />
-
-      <q-input v-model="estudiante.grupo" label="Grupo" outlined :rules="[
-        (val) => !!val || 'El grupo es requerido',
-        (val) => /^\d+$/.test(val) || 'Solo se permiten números',
-        (val) => String(val).length === 3 || 'Debe tener exactamente 3 dígitos'
-      ]" type="number" placeholder="101-410" />
-
+      <q-select v-model="estudiante.id_usuario" label="Id Usuario" :options="usuarioStore.usuarios" option-value="id"
+        option-label="username" outlined emit-value map-options
+        :rules="[(val) => !!val || 'El id del usuario es requerido']" />
+      <q-select v-model="estudiante.grupo" label="Grupo" :options="grupoStore.grupos" option-value="id"
+        option-label="name" outlined emit-value map-options :rules="[(val) => !!val || 'El grupo es requerido']" />
       <div class="flex justify-end space-x-3">
         <q-btn v-if="estudiante.id" flat label="Cancelar" color="grey" @click="cancelarEdicion" />
         <q-btn flat label="Limpiar" color="warning" type="reset" @click="resetForm" />

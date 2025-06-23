@@ -7,15 +7,24 @@ export const useAsistencia = defineStore('asistencia', {
   state: () => ({
     asistencias: [],
     asistenciaEnEdicion: null, // Para guardar la asistencia que se está editando
+    total: 0,
+    pages: 0,
+    currentPage: 1,
   }),
 
   actions: {
-    async fetchAsistencias() {
+    async fetchAsistencias({ limit = 5, offset = 0 } = {}) {
       try {
         console.log('Obteniendo asistencias...')
-        const response = await axios.get(`${API_URL}/asistencia/all`)
+        const params = new URLSearchParams()
+        if (limit) params.append('limit', limit)
+        if (offset) params.append('offset', offset)
+        const response = await axios.get(`${API_URL}/asistencia/all?${params.toString()}`)
         console.warn(response.data)
         this.asistencias = response.data.asistencias || []
+        this.total = response.data.total || 0
+        this.pages = response.data.pages || 0
+        this.currentPage = response.data.currentPage || 1
         return response.data.asistencias
       } catch (error) {
         console.error('Error al cargar asistencias:', error)
@@ -40,7 +49,7 @@ export const useAsistencia = defineStore('asistencia', {
 
     async editAsistencia(id, { nombre, descripcion }) {
       try {
-        console.log('Actualizando asistencia con ID:', id, nombre, descripcion  )
+        console.log('Actualizando asistencia con ID:', id, nombre, descripcion)
         const response = await axios.put(`${API_URL}/asistencia/${id}`, {
           name: nombre,
           active: true,

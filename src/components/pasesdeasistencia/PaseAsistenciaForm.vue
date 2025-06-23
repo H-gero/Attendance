@@ -146,29 +146,17 @@ function cancelarEdicion() {
     </div>
 
     <div class="mb-4">
-      <q-btn-toggle
-        v-model="mode"
-        toggle-color="primary"
-        :options="[
-          { label: 'Generar QR', value: 'qr' },
-          { label: 'Registro Manual', value: 'manual' },
-        ]"
-      />
+      <q-btn-toggle v-model="mode" toggle-color="primary" :options="[
+        { label: 'Generar QR', value: 'qr' },
+        { label: 'Registro Manual', value: 'manual' },
+      ]" />
     </div>
 
     <div v-if="mode === 'qr'">
       <q-form @submit.prevent="generateQr" class="space-y-6">
-        <q-select
-          v-model="selectedActivity"
-          label="Actividad del P1"
-          :options="p1Store.actividades"
-          option-value="id"
-          option-label="nombre"
-          outlined
-          emit-value
-          map-options
-          :rules="[(val) => !!val || 'La actividad es requerida']"
-        />
+        <q-select v-model="selectedActivity" label="Actividad del P1" :options="p1Store.actividades" option-value="id"
+          option-label="nombre" outlined emit-value map-options
+          :rules="[(val) => !!val || 'La actividad es requerida']" />
         <div v-if="qrValue" class="mt-4">
           <p>Escanee este QR:</p>
           <QRCodeVue :value="qrValue" :size="200" level="H" />
@@ -182,43 +170,14 @@ function cancelarEdicion() {
 
     <div v-else>
       <q-form @submit.prevent="submitFormManual" class="space-y-6">
-        <q-select
-          v-model="asistencia.id_p1"
-          label="Actividad del P1"
-          :options="p1Store.actividades"
-          option-value="id"
-          :option-label="p1Store.getNombreActividad"
-          outlined
-          emit-value
-          map-options
-        />
-        <q-select
-          v-model="asistencia.id_estudiante"
-          label="Estudiante"
-          :options="estudianteStore.estudiantes"
-          option-value="id"
-          option-label="name"
-          outlined
-          emit-value
-          map-options
-        />
-        <q-select
-          v-model="asistencia.id_asistencia"
-          label="Asistencia"
-          :options="asistenciaBaseStore.asistencias"
-          option-value="id"
-          option-label="name"
-          outlined
-          emit-value
-          map-options
-        />
-        <q-input
-          v-model="asistencia.fecha"
-          label="Fecha"
-          type="date"
-          outlined
-          :rules="[(val) => !!val || 'La fecha es requerida']"
-        />
+        <q-select v-model="asistencia.id_p1" label="Actividad del P1" :options="p1Store.actividades" option-value="id"
+          :option-label="p1Store.getNombreActividad" outlined emit-value map-options />
+        <q-select v-model="asistencia.id_estudiante" label="Estudiante" :options="estudianteStore.estudiantes"
+          option-value="id" option-label="name" outlined emit-value map-options />
+        <q-select v-model="asistencia.id_asistencia" label="Asistencia" :options="asistenciaBaseStore.asistencias"
+          option-value="id" option-label="name" outlined emit-value map-options />
+        <q-input v-model="asistencia.fecha" label="Fecha" type="date" outlined
+          :rules="[(val) => !!val || 'La fecha es requerida']" />
         <div class="flex justify-end space-x-3">
           <q-btn v-if="asistencia.id" flat label="Cancelar" color="grey" @click="cancelarEdicion" />
           <q-btn flat label="Limpiar" color="warning" @click="resetForm" />

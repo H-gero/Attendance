@@ -3,9 +3,20 @@ import { onMounted } from 'vue'
 import { usePaseEvaluacionStore } from 'src/stores/pasesdeevaluacion'
 import { useQuasar } from 'quasar'
 import PaseEvaluacionListItem from './PaseEvaluacionListItem.vue'
+import { ref, watch } from 'vue'
 
 const store = usePaseEvaluacionStore()
 const $q = useQuasar()
+const currentPage = ref(store.currentPage)
+
+watch(currentPage, (val) => {
+  onPageChange(val)
+})
+
+function onPageChange(page) {
+  console.log(page);
+  store.fetchEvaluaciones({ limit: 5, offset: (page - 1) * 5 })
+}
 
 onMounted(async () => {
   try {
@@ -28,13 +39,11 @@ onMounted(async () => {
       No hay evaluaciones registradas.
     </div>
     <TransitionGroup v-else tag="ul" name="list" class="space-y-4">
-      <PaseEvaluacionListItem
-        v-for="evaluacion in store.evaluaciones"
-        :key="`evaluacion-item${evaluacion.id}`"
-        :evaluacion="evaluacion"
-        class="animate__animated animate__fadeIn"
-      />
+      <PaseEvaluacionListItem v-for="evaluacion in store.evaluaciones" :key="`evaluacion-item${evaluacion.id}`"
+        :evaluacion="evaluacion" class="animate__animated animate__fadeIn" />
     </TransitionGroup>
+    <q-pagination v-model="currentPage" :max="store.pages" :max-pages="7" boundary-numbers
+      @update:model-value="onPageChange" class="q-mt-md" />
   </div>
 </template>
 
@@ -54,6 +63,7 @@ ul {
 .list-leave-active {
   transition: all 0.5s ease;
 }
+
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
