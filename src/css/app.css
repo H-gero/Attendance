@@ -1,0 +1,26 @@
+/* app global css */
+/* src/css/tailwind.css */
+/* src/main.css o src/assets/tailwind.css */
+@import 'tailwindcss';
+
+@layer base {
+  body {
+    @apply bg-slate-600;
+  }
+}
+
+@theme {
+  
+  --color-Lime: hsl(61, 20%, 52%);
+  --color-LimeTransparent: hsl(61, 20%, 52%, 20%);
+  --color-Wed: hsl(4, 69%, 50%);
+  --color-White: hsl(0, 0%, 100%);
+  --color-Slate50: #f8fafc;
+  --color-Slate100: hsl(202, 86%, 94%);
+  --color-Slate300: hsl(203, 41%, 72%);
+  --color-Slate500: hsl(200, 26%, 54%);
+  --color-Slate700: hsl(200, 24%, 40%);
+  --color-Slate800: #314158;
+  --color-Slate900: hsl(202, 55%, 16%);
+  --color-Slate900Transparent: hsl(202, 55%, 16%, 80%);
+}
