@@ -28,6 +28,13 @@ const linksList = ref([
     roles: ['admin'],
   },
   {
+    title: 'Grupos',
+    caption: 'Vista de grupos',
+    icon: 'group',
+    link: 'grupo',
+    roles: ['admin'],
+  },
+  {
     title: 'Asistencias',
     caption: 'Vista de asistencias',
     icon: 'code',

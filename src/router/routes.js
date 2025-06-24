@@ -9,6 +9,7 @@ const routes = [
       { path: '/asistencia', component: () => import('pages/AsistenciaView.vue') }, // Cambiado de src/views a pages
       { path: '/evaluaciones', component: () => import('pages/EvaluacionesView.vue') }, // Cambiado de src/views a pages
       { path: '/estudiantes', component: () => import('pages/EstudiantesView.vue') },
+      { path: '/grupo', component: () => import('pages/GrupoView.vue') },
       { path: '/profesor', component: () => import('pages/ProfesorView.vue') },
       { path: '/usuario', component: () => import('pages/UsuarioView.vue') },
       { path: '/tipodeclase', component: () => import('pages/TipoClaseView.vue') },

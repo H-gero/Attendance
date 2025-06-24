@@ -33,28 +33,30 @@ export const useGrupoStore = defineStore('grupo', {
 
     async createGrupo({ name, descripcion, id_profesor, active }) {
       try {
-        await axios.post('https://attendance-backend-9nhc.onrender.com/api/grupo/all', {
-          name: name,
-          description: descripcion,
-          id_profesor: id_profesor,
-          active,
-        })
-        this.fetchGrupo()
-      } catch (error) {
-        console.error('Error al crear el grupo:', error)
-        throw error
-      }
-    },
-
-    async updateGrupo(id, { name, descripcion, id_profesor, active }) {
-      try {
-        await axios.put(`https://attendance-backend-9nhc.onrender.com/api/grupo/${id}`, {
+        console.log('Creando grupo con los siguientes datos:', name, descripcion, id_profesor, active);
+        await axios.post('https://attendance-backend-9nhc.onrender.com/api/grupo', {
           name: name,
           description: descripcion,
           id_profesor: id_profesor,
           active,
         })
         this.fetchGrupos()
+      } catch (error) {
+        console.error('Error al crear el grupo:', error)
+        throw error
+      }
+    },
+
+    async updateGrupo(id, { name, description, id_profesor, active }) {
+      try {
+        console.log('Actualizando grupo con los siguientes datos:', id, name, description, id_profesor, active);
+        await axios.put(`https://attendance-backend-9nhc.onrender.com/api/grupo/${id}`, {
+          name: name,
+          description: description,
+          id_profesor: id_profesor,
+          active,
+        })
+        await this.fetchGrupos()
       } catch (error) {
         console.error('Error al actualizar el grupo:', error)
         throw error
